@@ -5,6 +5,21 @@ FROM ${JENKINS_REGISTRY}:${JENKINS_VER}
 # switch to root, let the entrypoint drop back to jenkins
 USER root
 
+
+
+
+#ENV JENKINS_USER admin
+#ENV JENKINS_PASS admin
+# Skip initial setup https://dev.to/rubiin/custom-jenkins-images-with-plugins-pre-installed-1pok
+#ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false
+#https://github.com/Kong/jenkins/blob/master/Dockerfile
+#COPY executors.groovy /usr/share/jenkins/ref/init.groovy.d/executors.groovy
+
+
+#https://dev.to/rubiin/custom-jenkins-images-with-plugins-pre-installed-1pok
+#COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
+#RUN /usr/local/bin/install-plugins.sh < /usr/share/jenkins/ref/plugins.txt
+
 # install prerequisite debian packages
 RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
@@ -23,7 +38,7 @@ ARG GOSU_VERSION=1.10
 RUN dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')" \
  && wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch" \
  && chmod +x /usr/local/bin/gosu \
- && gosu nobody true 
+ && gosu nobody true
 
 # install docker
 ARG DOCKER_CLI_VERSION==5:19.03.0~3-0~debian-stretch

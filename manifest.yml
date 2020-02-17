@@ -1,0 +1,65 @@
+#  https://www.blazemeter.com/blog/how-to-setup-scalable-jenkins-on-top-of-a-kubernetes-cluster/
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jenkins
+  template:
+    metadata:
+      labels:
+        app: jenkins
+    spec:
+      containers:
+        - name: jenkins
+          image: ilja07/jenkins-docker:2.0
+#          imagePullPolicy: Never: the image is assumed to exist locally. No attempt is made to pull the image. - https://kubernetes.io/docs/concepts/configuration/overview/
+          imagePullPolicy:  Never
+#          env:
+#            - name: JAVA_OPTS
+#              value: -Djenkins.install.runSetupWizard=false
+          ports:
+            - name: http-port
+              containerPort: 8080
+            - name: jnlp-port
+              containerPort: 50000
+          volumeMounts:
+            - name: jenkins-home
+              mountPath: /var/jenkins_home
+      volumes:
+        - name: jenkins-home
+          emptyDir: {}
+
+#---
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: jenkins-service
+#spec:
+#  type: NodePort
+#  ports:
+#    - port: 8080
+#      targetPort: 8080
+#  selector:
+#    app: jenkins
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins-service
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    name: "http"
+    nodePort: 30000
+    targetPort: 8080
+  - port: 50000
+    name: "slave"
+    nodePort: 30010
+    targetPort: 50000
+  selector:
+    app: jenkins
