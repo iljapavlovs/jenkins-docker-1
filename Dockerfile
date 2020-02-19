@@ -10,15 +10,6 @@ USER root
 
 #ENV JENKINS_USER admin
 #ENV JENKINS_PASS admin
-# Skip initial setup https://dev.to/rubiin/custom-jenkins-images-with-plugins-pre-installed-1pok
-#ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false
-#https://github.com/Kong/jenkins/blob/master/Dockerfile
-#COPY executors.groovy /usr/share/jenkins/ref/init.groovy.d/executors.groovy
-
-
-#https://dev.to/rubiin/custom-jenkins-images-with-plugins-pre-installed-1pok
-#COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
-#RUN /usr/local/bin/install-plugins.sh < /usr/share/jenkins/ref/plugins.txt
 
 # install prerequisite debian packages
 RUN apt-get update \
@@ -55,6 +46,21 @@ RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - \
  && rm -rf /var/lib/apt/lists/* \
  && groupadd -r docker \
  && usermod -aG docker jenkins
+
+
+
+# Skip initial setup https://dev.to/rubiin/custom-jenkins-images-with-plugins-pre-installed-1pok
+#ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false
+#https://github.com/Kong/jenkins/blob/master/Dockerfile
+#COPY executors.groovy /usr/share/jenkins/ref/init.groovy.d/executors.groovy
+
+
+#https://dev.to/rubiin/custom-jenkins-images-with-plugins-pre-installed-1pok
+#todo - java.lang.NoClassDefFoundError: org/jenkinsci/plugins/workflow/cps/GroovySample
+#COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
+#RUN /usr/local/bin/install-plugins.sh < /usr/share/jenkins/ref/plugins.txt
+
+
 
 # entrypoint is used to update docker gid and revert back to jenkins user
 COPY entrypoint.sh /entrypoint.sh

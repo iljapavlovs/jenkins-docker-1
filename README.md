@@ -6,7 +6,19 @@ gid permissions.
 
 
 
+------
+## Running Jenkins via Docker
+**JUST**
+```
+docker-compose up
+```
+
+Job configuration is already copied
+
 ## Jenkins and Kubernetes:
+NOTE - Currently not able to run Jenkins with default plugins installed. 
+java.lang.NoClassDefFoundError: org/jenkinsci/plugins/workflow/cps/GroovySample is thrown
+
 Start Minikube
 ```
 minikube start
@@ -36,7 +48,7 @@ minikube dashboard
 ```
 
 
-### Open Jenkins UI
+### Open Jenkins UI - Using NodePort
 1. find out IP of the cluster
 ```
 minikube ip
@@ -46,7 +58,14 @@ minikube ip
 kubectl get service
 ```
 
-### Configure Jenkins Salves
+### Open Jenkins UI - Using LoadBalancer
+1. find out IP of the cluster
+```
+minikube service jenkins-ui-service --url
+```
+
+
+### Configure Jenkins Slaves
 In order to configure the Jenkins slaves. We need to know the URL of the Kubernetes master and the internal cluster URL of the Jenkins pod
 ```
 kubectl cluster-info | grep master
@@ -63,6 +82,23 @@ kubectl get pods | grep jenkins
 kubectl describe pod <ID>
 ```
 172.17.0.7
+
+
+### Troubleshoot
+1. Open Dahsboard
+```
+minikube dashboard
+```
+2. Go to Pod -> Open Logs
+
+
+
+
+## Jenkins via Helm
+```
+helm install jenkins-release-1 stable/jenkins
+```
+
 
 ## Resources:
 1. [How to Setup Scalable Jenkins on Top of a Kubernetes Cluster](https://www.blazemeter.com/blog/how-to-setup-scalable-jenkins-on-top-of-a-kubernetes-cluster/)
